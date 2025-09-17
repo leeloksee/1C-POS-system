@@ -79,7 +79,7 @@ const TopNavBar = ({ total, itemCount, onClickCheckout, cartItems = [] }) => {
             </div>
           </div>
           <div className="nav-right">
-            <button onClick={onClickCheckout} className="checkout-btn">Checkout</button>
+            <button onClick={() => {onClickCheckout(); setIsExpanded(false); }} className="checkout-btn">Checkout</button>
 
           </div>
         </div>

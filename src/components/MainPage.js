@@ -149,6 +149,7 @@ const MainPage = () => {
       
       // Reset cart
       setCart({});
+      setInvoiceEmail('');
       
     } catch (error) {
       console.error('Error submitting form:', error);
