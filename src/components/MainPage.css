@@ -46,7 +46,7 @@
 }
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 4px;
   padding: 4px;
   max-width: 1200px;
@@ -145,34 +145,6 @@
   .submit-button {
     font-size: 16px;
     padding: 14px 20px;
-  }
-}
-
-@media (max-width: 400px) {
-  .items-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 10px;
-  }
-  
-  .submit-button {
-    font-size: 15px;
-    padding: 12px 16px;
-  }
-  
-  .view-toggle-btn {
-    font-size: 12px;
-    padding: 8px 12px;
-  }
-  
-  .items-table-container {
-    padding: 0 10px;
-  }
-  
-  .items-table th,
-  .items-table td {
-    padding: 8px 6px;
-    font-size: 12px;
   }
 }
 
