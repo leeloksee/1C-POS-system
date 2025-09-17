@@ -1,0 +1,49 @@
+/* ItemRow Styles */
+.item-name-cell {
+  width: 50%;
+  font-size: 12px;
+}
+
+.item-name-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+}
+
+.item-price-cell {
+  font-weight: 600;
+  color: #27ae60;
+  text-align: center;
+  width: 15%;
+  font-size: 12px;
+}
+
+.item-quantity-cell {
+  text-align: center;
+  width: 20%;
+}
+
+.item-total-cell {
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: right;
+  width: 15%;
+  min-width: 80px;
+  font-size: 12px;
+}
+
+/* QuantityInput styling for table context */
+.item-quantity-cell .quantity-input {
+  justify-content: center;
+}
+
+.item-quantity-cell .quantity-btn {
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+}
+
+.item-quantity-cell .quantity-display {
+  width: 34px;
+}
