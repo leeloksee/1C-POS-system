@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./QuantityInput.css";
 
 const QuantityInput = ({ quantity, onIncrement, onDecrement, onQuantityChange }) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -13,7 +12,6 @@ const QuantityInput = ({ quantity, onIncrement, onDecrement, onQuantityChange })
   const handlePopupSubmit = (e) => {
     e.preventDefault();
     const newQuantity = parseInt(inputValue);
-    
     if (!isNaN(newQuantity) && newQuantity >= 0) {
       onQuantityChange(newQuantity);
       setShowPopup(false);
@@ -39,33 +37,43 @@ const QuantityInput = ({ quantity, onIncrement, onDecrement, onQuantityChange })
 
   return (
     <>
-      <div className="quantity-input">
-        <button 
-          className="quantity-btn minus-btn" 
+      <div className="flex items-center justify-between md:text-sm text-xs">
+        <button
+          className="px-2 py-1 bg-red-300 text-gray-700 border-0 font-semibold hover:bg-gray-300 transition disabled:opacity-50 w-[36px]"
           onClick={onDecrement}
           disabled={quantity <= 0}
+          aria-label="Decrease quantity"
+          type="button"
         >
           -
         </button>
-        <span 
-          className="quantity-display clickable" 
+        <span
+          className="px-1 py-1 bg-white border-0 text-gray-800 font-semibold cursor-pointer select-none hover:bg-blue-50 transition text-center w-full"
           onClick={handleQuantityClick}
           title="Click to edit quantity"
         >
           {quantity}
         </span>
-        <button 
-          className={`quantity-btn plus-btn ${quantity <= 0 ? 'no-quantity' : ''}`} 
+        <button
+          className={`px-2 py-1 border-0 bg-green-300 text-gray-700 font-semibold hover:bg-gray-300 transition w-[36px]`}
           onClick={onIncrement}
+          aria-label="Increase quantity"
+          type="button"
         >
           +
         </button>
       </div>
 
       {showPopup && (
-        <div className="quantity-popup-overlay" onClick={handlePopupCancel}>
-          <div className="quantity-popup" onClick={(e) => e.stopPropagation()}>
-            <h3>Set Quantity</h3>
+        <div
+          className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-30"
+          onClick={handlePopupCancel}
+        >
+          <div
+            className="bg-primary  shadow-lg p-6 w-72 max-w-full z-50"
+            onClick={e => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">Set Quantity</h3>
             <form onSubmit={handlePopupSubmit}>
               <input
                 type="number"
@@ -74,13 +82,20 @@ const QuantityInput = ({ quantity, onIncrement, onDecrement, onQuantityChange })
                 onKeyDown={handleKeyPress}
                 min="0"
                 autoFocus
-                className="quantity-input-field"
+                className="w-full px-3 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-gray-800 mb-4"
               />
-              <div className="popup-buttons">
-                <button type="button" onClick={handlePopupCancel} className="cancel-btn">
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={handlePopupCancel}
+                  className="px-4 py-2  bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition"
+                >
                   Cancel
                 </button>
-                <button type="submit" className="submit-btn">
+                <button
+                  type="submit"
+                  className="px-4 py-2  bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+                >
                   Set
                 </button>
               </div>

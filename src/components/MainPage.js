@@ -4,11 +4,12 @@ import TopNavBar from "./TopNavBar";
 import Item from "./Item";
 import ItemRow from "./ItemRow";
 import InvoiceEmailPopup from "./InvoiceEmailPopup";
+import LogoutPopUp from "./LogoutPopUp";
 import { API } from "../constant";
-import { loginSuccess } from "../store/authSlice";
+import { loginSuccess, logout } from "../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from '../store/hooks';
-import "./MainPage.css";
+import CheckoutPopup from "./CheckoutPopup";
 
 const MainPage = () => {
   const [cart, setCart] = useState({});
@@ -19,10 +20,33 @@ const MainPage = () => {
   const [showEmailPopup, setShowEmailPopup] = useState(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [showCheckoutPopUp, setShowCheckoutPopUp] = useState(false);
+
+
+  const handleStaffNameClick = () => {
+    setShowLogoutPopup(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
+  const handleLogout = (e) => {
+    handleLogoutConfirm();
+  };
+
+  const onClickCheckout = (e) => {
+    setShowCheckoutPopUp(true);
+  }
+
+  const onCancelCheckout = (e) => {
+    setShowCheckoutPopUp(false);
+  }
 
 
   useEffect(() => {
-    console.log(items, passcode);
     if (items.length > 0) {
       return;
     }
@@ -49,14 +73,15 @@ const MainPage = () => {
               itemsEntryId: data.itemsEntryId,
             }));
           } else {
-            console.log(data);
             navigate('/login');
           }
         });
     } else if (!passcode) {
       navigate('/login');
     }
+    // eslint-disable-next-line
   }, [items]);
+
   // Calculate total and item count
   const total = Object.entries(cart).reduce((sum, [itemId, quantity]) => {
     const item = items.find(item => item.id === itemId);
@@ -97,99 +122,103 @@ const MainPage = () => {
     setShowEmailPopup(false);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (email) => {
     if (itemCount === 0) {
-      alert("Please add items to cart before submitting.");
-      return;
+      throw new Error("Please add items to cart before submitting.");
     }
 
     setIsSubmitting(true);
 
-    try {
-      // Prepare form data
-      const formData = new FormData();
-      
-      // Add staff name from Redux store
-      if (staffNameEntryId) {
-        formData.append(`entry.${staffNameEntryId}`, staffName || 'Unknown');
-      }
-      if (totalAmountEntryId) {
-        formData.append(`entry.${totalAmountEntryId}`, total.toFixed(2));
-      }
-      if (itemCountEntryId) {
+    // Prepare form data
+    const formData = new FormData();
+    
+    // Add staff name from Redux store
+    if (staffNameEntryId) {
+      formData.append(`entry.${staffNameEntryId}`, staffName || 'Unknown');
+    }
+    if (totalAmountEntryId) {
+      formData.append(`entry.${totalAmountEntryId}`, total.toFixed(2));
+    }
+    if (itemCountEntryId) {
       formData.append(`entry.${itemCountEntryId}`, itemCount);
-      }
-      if (invoiceEmailEntryId) {
-        formData.append(`entry.${invoiceEmailEntryId}`, invoiceEmail);
-      }
-      Object.entries(cart).forEach(([itemId, quantity]) => {
-        if (quantity > 0) {
-          const item = items.find(item => item.id === itemId);
-          if (item) {
-            formData.append(`entry.${item.id}`, quantity);
-            if (itemsEntryId) {
-              formData.append(`entry.${itemsEntryId}`, `${item.name} x${quantity} - $${(item.price * quantity).toFixed(2)}`);
-            }
+    }
+    if (invoiceEmailEntryId) {
+      formData.append(`entry.${invoiceEmailEntryId}`, email);
+    }
+    Object.entries(cart).forEach(([itemId, quantity]) => {
+      if (quantity > 0) {
+        const item = items.find(item => item.id === itemId);
+        if (item) {
+          formData.append(`entry.${item.id}`, quantity);
+          if (itemsEntryId) {
+            formData.append(`entry.${itemsEntryId}`, `${item.name} x${quantity} - $${(item.price * quantity).toFixed(2)}`);
           }
         }
-      });
+      }
+    });
 
-      // Replace this URL with your actual Google Form URL
-      const GOOGLE_FORM_URL = formSubmitUrl;
+    // Replace this URL with your actual Google Form URL
+    const GOOGLE_FORM_URL = formSubmitUrl;
 
-
-      // Submit the form data to Google Form
-      await fetch(GOOGLE_FORM_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        body: formData,
-      });
-      
-      alert(`Order submitted successfully!\nTotal: $${total.toFixed(2)}\nItems: ${itemCount}\nInvoice Email: ${invoiceEmail}`);
-      
-      // Reset cart
-      setCart({});
-      setInvoiceEmail('');
-      
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Error submitting order. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Submit the form data to Google Form
+    await fetch(GOOGLE_FORM_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData,
+    });
+    // Reset cart
+    setCart({});
+    setInvoiceEmail('');
+    setIsSubmitting(false);
   };
 
   return (
-    <div className="main-page">
-      <TopNavBar total={total} itemCount={itemCount} onClickCheckout={handleSubmit} cartItems={cartItems} />
+    <div className={`main-page bg-primary min-h-screen t-0 w-full pt-[68px] ${showCheckoutPopUp? 'fixed': ''}`}>
+      <TopNavBar total={total} itemCount={itemCount} onClickCheckout={onClickCheckout} cartItems={cartItems} />
       
-      <div style={{ display: "flex", justifyContent: "space-between", maxWidth: 1200, margin: "0 auto 8px auto", padding: "0 8px" }}>
-       <button className="add-invoice-email-btn" onClick={handleEmailButtonClick}>
-         {invoiceEmail ? `${invoiceEmail} (Edit)` : 'No Invoice Email (Add)'}
-       </button>
-      <div className="view-toggle-container">
-        <button
-          type="button"
-          className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-          onClick={handleViewModeToggle}
-          title={`Switch to ${viewMode === 'grid' ? 'table' : 'grid'} view`}
-        >
-          {viewMode === 'grid' ? 'Table View' : 'Grid View'}
-        </button>
-        <button
-          type="button"
-          className="reset-button"
-          disabled={isSubmitting || itemCount === 0}
-          onClick={() => setCart({})}
-          title="Reset all quantities"
-        >
-          Reset
-        </button>
+
+
+      {/* Show staff name in the top right, similar to TopNavBar, but only if staffName is set */}
+      <div className="flex justify-between items-center max-w-5xl mx-auto mb-2 px-2">
+          <span
+            className="text-xs text-white cursor-pointer hover:underline transition"
+            onClick={handleStaffNameClick}
+            title="Click to logout"
+          >
+            Staff: {staffName}
+          </span>
         </div>
+      <div className="flex justify-between items-center max-w-5xl mx-auto px-2 mb-4">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="btn-primary btn-sm"
+            onClick={handleViewModeToggle}
+            title={`Switch to ${viewMode === 'grid' ? 'table' : 'grid'} view`}
+          >
+            {viewMode === 'grid' ? 'Table View' : 'Grid View'}
+          </button>
+          <button
+            type="button"
+            className="btn-sm btn-primary"
+            disabled={isSubmitting || itemCount === 0}
+            onClick={() => setCart({})}
+            title="Reset all quantities"
+          >
+            Reset
+          </button>
+        </div>
+        
+        <button
+          className="btn-primary-outline btn-sm"
+          onClick={handleEmailButtonClick}
+        >
+          {invoiceEmail ? `${invoiceEmail} (Edit)` : 'No Invoice Email (Add)'}
+        </button>
       </div>
       
       {viewMode === 'grid' ? (
-        <div className="items-grid">
+        <div className="items-grid grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-3 max-w-5xl mx-auto px-2 pb-8">
           {items.map(item => (
             <Item
               key={item.id}
@@ -200,8 +229,8 @@ const MainPage = () => {
           ))}
         </div>
       ) : (
-        <div className="items-table-container">
-          <table className="items-table">
+        <div className="items-table-container max-w-5xl mx-auto px-2 pb-8">
+          <table className="items-table w-full border border-gray-200  bg-primary shadow-sm">
             <tbody>
               {items.map(item => (
                 <ItemRow
@@ -217,12 +246,45 @@ const MainPage = () => {
       )}
 
       {/* Email Popup */}
-      <InvoiceEmailPopup
+      {showEmailPopup && <InvoiceEmailPopup
         isOpen={showEmailPopup}
         onClose={handleEmailPopupClose}
         onSave={handleEmailSave}
         currentEmail={invoiceEmail}
       />
+}
+      {/* Logout Popup */}
+      {showLogoutPopup && (
+        <LogoutPopUp
+          isOpen={showLogoutPopup}
+          onCancel={() => setShowLogoutPopup(false)}
+          onConfirm={handleLogout}
+        />
+      )}
+
+      {showCheckoutPopUp && (
+      <CheckoutPopup
+        isOpen={showCheckoutPopUp}
+        onClose={onCancelCheckout}
+        total={total}
+        itemCount={itemCount}
+        cartItems={items
+          .filter(item => cart[item.id] > 0)
+          .map(item => ({
+            ...item,
+            quantity: cart[item.id]
+          }))
+        }
+        onConfirm={(email) => {
+          // You can handle the confirm logic here, e.g., submit the form or process checkout
+          // For now, just close the popup and update invoice email
+          setInvoiceEmail(email);
+          return handleSubmit(email);
+        }}
+        invoiceEmail={invoiceEmail}
+        onInvoiceEmailChange={setInvoiceEmail}
+      />
+      )}
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import React from "react";
 import QuantityInput from "./QuantityInput";
-import "./Item.css";
 
 const Item = ({ item, quantity, onQuantityChange }) => {
   const handleIncrement = () => {
@@ -22,15 +21,24 @@ const Item = ({ item, quantity, onQuantityChange }) => {
   };
 
   return (
-    <div className="item-card" style={{ borderColor: quantity > 0 ? "#27ae60" : "transparent" }}>
-      <div className="item-image">
-        <img onClick={handleImageClick} src={item.image} alt={item.name} />
+    <div
+      className={`bg-gray-300 overflow-hidden transition-transform transition-shadow duration-200 flex flex-col h-full border-2 ${
+        quantity > 0 ? "border-green-600 bg-green-200 " : "border-transparent bg-gray-100 "
+      }`}
+    >
+      <div className="w-full h-[120px] bg-primary overflow-hidden flex items-center justify-center">
+        <img
+          onClick={handleImageClick}
+          src={item.image}
+          alt={item.name}
+          className="w-full h-full object-cover cursor-pointer"
+        />
       </div>
-      <div className="item-info">
-        <h3 className="item-name">{item.name}</h3>
-        <p className="item-price">${item.price.toFixed(2)}</p>
+      <div className="p-1 flex-1 flex flex-col justify-between">
+        <h3 className="text-xs font-semibold text-gray-800 m-0 leading-tight">{item.name}</h3>
+        <p className="text-xs font-bold text-gray-400 m-0">${item.price.toFixed(2)}</p>
       </div>
-      <div className="item-controls">
+      <div className="p-0">
         <QuantityInput
           quantity={quantity}
           onIncrement={handleIncrement}

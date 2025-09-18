@@ -1,6 +1,5 @@
 import React from "react";
 import QuantityInput from "./QuantityInput";
-import "./ItemRow.css";
 
 const ItemRow = ({ item, quantity, onQuantityChange }) => {
   const handleIncrement = () => {
@@ -18,12 +17,16 @@ const ItemRow = ({ item, quantity, onQuantityChange }) => {
   };
 
   return (
-    <tr className={quantity > 0 ? 'has-quantity' : ''}>
-      <td className="item-name-cell">
-        <div className="item-name-text">{item.name}</div>
+    <tr
+      className={`transition-colors md:text-sm text-xs text-gray-800 ${
+        quantity > 0 ? "bg-green-100" : "bg-gray-100"
+      }`}
+    >
+      <td className="px-1 py-2">
+        <div className="font-bold">{item.name}</div>
+        <div className="text-gray-400 ml-2">${item.price.toFixed(2)}</div>
       </td>
-      <td className="item-price-cell">${item.price.toFixed(2)}</td>
-      <td className="item-quantity-cell">
+      <td className="px-1 py-2">
         <QuantityInput
           quantity={quantity}
           onIncrement={handleIncrement}
@@ -31,7 +34,9 @@ const ItemRow = ({ item, quantity, onQuantityChange }) => {
           onQuantityChange={handleDirectQuantityChange}
         />
       </td>
-      <td className="item-total-cell">${(item.price * quantity).toFixed(2)}</td>
+      <td className="px-1 py-2 font-semibold whitespace-nowrap">
+        ${(item.price * quantity).toFixed(2)}
+      </td>
     </tr>
   );
 };

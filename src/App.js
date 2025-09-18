@@ -20,7 +20,7 @@ function AppContent() {
 
   return (
     <Router>
-      <div className="App">
+      <div className="App bg-primary text-white">
         <Routes>
           <Route 
             path="/" 

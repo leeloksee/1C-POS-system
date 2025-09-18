@@ -1,127 +1,68 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { logout } from "../store/authSlice";
-import "./TopNavBar.css";
-
+import Cart from "./Cart";
 
 const TopNavBar = ({ total, itemCount, onClickCheckout, cartItems = [] }) => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { staffName } = useAppSelector((state) => state.auth);
-  const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const handleStaffNameClick = () => {
-    setShowLogoutPopup(true);
-  };
 
-  const handleLogoutConfirm = () => {
-    dispatch(logout());
-    navigate("/login");
-  };
-
-  const handleLogoutCancel = () => {
-    setShowLogoutPopup(false);
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleLogoutConfirm();
-    } else if (e.key === 'Escape') {
-      handleLogoutCancel();
-    }
-  };
 
   const handleToggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const formatCartItems = () => {
-    if (cartItems.length === 0) {
-      return <div className="cart-item-text">No items in cart</div>;
-    }
-    
-    return cartItems.map((item, index) => (
-      <div key={index} className="cart-item-text">
-        <span className="item-name">{item.name}</span>
-        <span className="item-quantity">x{item.quantity}</span>
-        <span className="item-price">${(item.price * item.quantity).toFixed(2)}</span>
-      </div>
-    ));
-  };
 
   return (
     <>
-      <div className={`top-nav-bar ${isExpanded ? 'expanded' : 'collapsed'}`}>
-        <div className="nav-content">
-          <div className="nav-left">
-            <span 
-              className="staff-name clickable" 
-              onClick={handleStaffNameClick}
-              title="Click to logout"
-            >
-              Staff: {staffName}
-            </span>
+      <div
+        className={`w-full bg-primary-light fixed top-0 left-0 shadow-md z-30 transition-all duration-200`}
+      >
+        <div className="flex items-center justify-between px-4 py-2 max-w-5xl mx-auto h-[56px]">
+          {/* Left: Staff Name */}
+          <div className="flex-1">
           </div>
-          <div className="nav-center">
-            <div className="total-display">
-              <button 
-                onClick={handleToggleExpanded} 
-                className={`expand-btn ${isExpanded ? 'expanded' : ''}`}
+          {/* Center: Total and Expand */}
+          <div className="flex-1 flex justify-center">
+            <div className="">
+              <button
+                onClick={handleToggleExpanded}
+                className={`text-lg font-bold flex items-center gap-2 px-3 font-bold text-white`}
                 title={isExpanded ? "Collapse cart" : "Expand cart"}
+                type="button"
               >
-                {isExpanded ? '⯆' : '⯈'}
+                <span className="text-xl">{isExpanded ? "⯆" : "⯈"}</span>
+
+                <span className="text-4xl">${total.toFixed(2)}</span>
+                <span className="text-base">({itemCount})</span>
               </button>
-              <span className="total-amount">${total.toFixed(2)}</span>
-              <span className="item-count">({itemCount})</span>
 
             </div>
           </div>
-          <div className="nav-right">
-            <button onClick={() => {onClickCheckout(); setIsExpanded(false); }} className="checkout-btn">Checkout</button>
-
+          {/* Right: Checkout */}
+          <div className="flex-1 flex justify-end">
+            <button
+              onClick={() => {
+                onClickCheckout();
+                setIsExpanded(false);
+              }}
+              className="btn-secondary"
+              type="button"
+            >
+              Checkout
+            </button>
           </div>
         </div>
-        
+        {/* Cart Details */}
         {isExpanded && (
-          <div className="cart-details">
-            <div className="cart-items-list">
-              {formatCartItems()}
+          <div className="bg-primary-light border-t border-primary">
+            <div className="max-w-5xl mx-auto px-2 py-2">
+              <Cart cartItems={cartItems} />
             </div>
           </div>
         )}
       </div>
 
-      {showLogoutPopup && (
-        <div className="logout-popup-overlay" onClick={handleLogoutCancel}>
-          <div className="logout-popup" onClick={(e) => e.stopPropagation()}>
-            <h3>Confirm Logout</h3>
-            <p>Are you sure you want to logout?</p>
-            <div className="popup-buttons">
-              <button 
-                type="button" 
-                onClick={handleLogoutCancel} 
-                className="cancel-btn"
-                onKeyDown={handleKeyPress}
-              >
-                Cancel
-              </button>
-              <button 
-                type="button" 
-                onClick={handleLogoutConfirm} 
-                className="logout-confirm-btn"
-                onKeyDown={handleKeyPress}
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
-
 
 export default TopNavBar;

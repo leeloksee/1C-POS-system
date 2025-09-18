@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { loginSuccess, loginFailure, clearError, loginStart } from "../store/authSlice";
 import { API } from "../constant";
-import "./LoginPage.css";
 
 const LoginPage = () => {
   const [passcode, setPasscode] = useState("");
@@ -51,12 +50,20 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <h1>POS System Login</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="passcode">Passcode:</label>
+    <div className="min-h-screen flex items-center justify-center bg-primary-dark">
+      <div className="w-full max-w-sm bg-primary p-8">
+        <div className="flex flex-row items-center justify-center">
+          <img src="./onecircle-144.png" className="w-[80px] mb-8" />
+          <h1 className="text-2xl font-bold text-center text-white mb-6">POS System Login</h1>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="passcode"
+              className="block text-sm font-medium mb-1"
+            >
+              Passcode
+            </label>
             <input
               type="password"
               id="passcode"
@@ -65,12 +72,17 @@ const LoginPage = () => {
               placeholder="Enter passcode"
               required
               disabled={isLoading}
+              className="w-full px-3 py-2 border border-gray-300  focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-gray-800 transition disabled:bg-gray-100"
             />
           </div>
-          {error && <div className="error-message">{error}</div>}
-          <button 
-            type="submit" 
-            className="login-button"
+          {error && (
+            <div className="text-red-600 text-sm font-medium bg-red-50 border border-red-200  px-3 py-2">
+              {error}
+            </div>
+          )}
+          <button
+            type="submit"
+            className={`w-full btn-primary`}
             disabled={isLoading}
           >
             {isLoading ? "Logging in..." : "Login"}
