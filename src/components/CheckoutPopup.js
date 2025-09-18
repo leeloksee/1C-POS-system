@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useAppSelector } from "../store/hooks";
+import PaymentMethodSelection from "./PaymentMethodSelection";
+
 const CheckoutPopup = ({
   isOpen,
   onClose,
@@ -13,6 +15,8 @@ const CheckoutPopup = ({
   const [email, setEmail] = useState(initialInvoiceEmail);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [remarks, setRemarks] = useState("");
   const { staffName } = useAppSelector((state) => state.auth);
 
   const [showSuccess, setShowSuccess] = useState(false);
@@ -21,8 +25,6 @@ const CheckoutPopup = ({
   React.useEffect(() => {
     setEmail(initialInvoiceEmail || "");
     setError("");
-    setIsLoading(false);
-    setShowSuccess(false);
   }, [initialInvoiceEmail, isOpen]);
 
   if (!isOpen) return null;
@@ -38,10 +40,10 @@ const CheckoutPopup = ({
     setIsLoading(true);
     setError("");
     try {
-      if (onConfirm) {
-        await onConfirm(email);
-        setShowSuccess(true);
-      }
+        console.log(email)
+        const success = await onConfirm({email, paymentMethod, remarks});
+        console.log(success);
+        setShowSuccess(success);
     } catch (err) {
       setError(
         err?.message ||
@@ -102,7 +104,13 @@ const CheckoutPopup = ({
             )}
           </ul>
         </div>
-        <div className="mb-4">
+
+        <PaymentMethodSelection
+          value={paymentMethod}
+          onChange={setPaymentMethod}
+          disabled={isLoading}
+        />
+        <div className="">
           <label
             className="block text-white font-semibold mb-1"
             htmlFor="checkout-invoice-email"
@@ -117,6 +125,25 @@ const CheckoutPopup = ({
             value={email}
             onChange={handleEmailChange}
             autoComplete="off"
+            disabled={isLoading}
+          />
+        </div>
+
+
+        <div className="">
+          <label
+            className="block text-white font-semibold mb-1"
+            htmlFor="checkout-remarks"
+          >
+            Remarks
+          </label>
+          <textarea
+            id="checkout-remarks"
+            className="w-full px-3 py-2 text-primary mb-6 resize-none"
+            placeholder="Enter remarks (optional)"
+            value={remarks}
+            onChange={e => setRemarks(e.target.value)}
+            rows={2}
             disabled={isLoading}
           />
         </div>

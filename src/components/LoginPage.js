@@ -33,13 +33,7 @@ const LoginPage = () => {
         if (data?.success) {
           dispatch(loginSuccess({
             passcode: passcode,
-            items: data.items,
-            formSubmitUrl: data.formSubmitUrl,
-            staffNameEntryId: data.staffNameEntryId,
-            totalAmountEntryId: data.totalAmountEntryId,
-            itemCountEntryId: data.itemCountEntryId,
-            invoiceEmailEntryId: data.invoiceEmailEntryId,
-            itemsEntryId: data.itemsEntryId,
+            ...data,
           }));
           navigate("/staff-name");
         } else {

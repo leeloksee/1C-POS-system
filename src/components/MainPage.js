@@ -15,7 +15,7 @@ const MainPage = () => {
   const [cart, setCart] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
-  const { staffName, staffNameEntryId, totalAmountEntryId, itemCountEntryId, invoiceEmailEntryId, itemsEntryId, items, formSubmitUrl, passcode } = useAppSelector((state) => state.auth);
+  const { staffName, staffNameEntryId, totalAmountEntryId, itemCountEntryId, invoiceEmailEntryId, paymentMethodEntryId, remarksEntryId, itemsEntryId, items, formSubmitUrl, passcode } = useAppSelector((state) => state.auth);
   const [invoiceEmail, setInvoiceEmail] = useState('');
   const [showEmailPopup, setShowEmailPopup] = useState(false);
   const navigate = useNavigate();
@@ -64,13 +64,7 @@ const MainPage = () => {
           const data = JSON.parse(res);
           if (data.success) {
             dispatch(loginSuccess({
-              items: data.items,
-              formSubmitUrl: data.formSubmitUrl,
-              staffNameEntryId: data.staffNameEntryId,
-              totalAmountEntryId: data.totalAmountEntryId,
-              itemCountEntryId: data.itemCountEntryId,
-              invoiceEmailEntryId: data.invoiceEmailEntryId,
-              itemsEntryId: data.itemsEntryId,
+              ...data,
             }));
           } else {
             navigate('/login');
@@ -122,12 +116,14 @@ const MainPage = () => {
     setShowEmailPopup(false);
   };
 
-  const handleSubmit = async (email) => {
+  const handleSubmit = async ({email, paymentMethod, remarks}) => {
+    setInvoiceEmail(email);
     if (itemCount === 0) {
       throw new Error("Please add items to cart before submitting.");
     }
-
-    setIsSubmitting(true);
+    if (!paymentMethod) {
+      throw new Error("Please select payment method.");
+    }
 
     // Prepare form data
     const formData = new FormData();
@@ -144,6 +140,13 @@ const MainPage = () => {
     }
     if (invoiceEmailEntryId) {
       formData.append(`entry.${invoiceEmailEntryId}`, email);
+    }
+    if (paymentMethodEntryId) {
+      formData.append(`entry.${paymentMethodEntryId}`, paymentMethod);
+    }
+    if (remarksEntryId) {
+      formData.append(`entry.${remarksEntryId}`, remarks);
+
     }
     Object.entries(cart).forEach(([itemId, quantity]) => {
       if (quantity > 0) {
@@ -166,10 +169,11 @@ const MainPage = () => {
       mode: 'no-cors',
       body: formData,
     });
+    console.log("Submitted");
     // Reset cart
     setCart({});
     setInvoiceEmail('');
-    setIsSubmitting(false);
+    return true;
   };
 
   return (
@@ -275,12 +279,7 @@ const MainPage = () => {
             quantity: cart[item.id]
           }))
         }
-        onConfirm={(email) => {
-          // You can handle the confirm logic here, e.g., submit the form or process checkout
-          // For now, just close the popup and update invoice email
-          setInvoiceEmail(email);
-          return handleSubmit(email);
-        }}
+        onConfirm={handleSubmit}
         invoiceEmail={invoiceEmail}
         onInvoiceEmailChange={setInvoiceEmail}
       />

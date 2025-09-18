@@ -11,6 +11,7 @@ const initialState = {
   totalAmountEntryId: null,
   itemCountEntryId: null,
   invoiceEmailEntryId: null,
+  paymentMethodEntryId: null,
   itemsEntryId: null,
   passcode: Cookies.get('passcode') || '',
 };
@@ -37,7 +38,9 @@ const authSlice = createSlice({
       state.totalAmountEntryId = action.payload.totalAmountEntryId;
       state.itemCountEntryId = action.payload.itemCountEntryId;
       state.invoiceEmailEntryId = action.payload.invoiceEmailEntryId;
+      state.paymentMethodEntryId = action.payload.paymentMethodEntryId;
       state.itemsEntryId = action.payload.itemsEntryId;
+      state.remarksEntryId = action.payload.remarksEntryId;
 
     },
     loginFailure: (state, action) => {
