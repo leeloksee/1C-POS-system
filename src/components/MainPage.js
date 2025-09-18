@@ -222,7 +222,7 @@ const MainPage = () => {
       </div>
       
       {viewMode === 'grid' ? (
-        <div className="items-grid grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-3 max-w-5xl mx-auto px-2 pb-8">
+        <div className="items-grid grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-1 max-w-5xl mx-auto px-2 pb-8">
           {items.map(item => (
             <Item
               key={item.id}
