@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "https://ayame30.github.io/pos-system-demo/static/css/main.ef161a93.css",
-    "main.js": "https://ayame30.github.io/pos-system-demo/static/js/main.6944ab2c.js",
-    "static/js/488.ea624d26.chunk.js": "https://ayame30.github.io/pos-system-demo/static/js/488.ea624d26.chunk.js",
-    "index.html": "https://ayame30.github.io/pos-system-demo/index.html",
-    "main.ef161a93.css.map": "https://ayame30.github.io/pos-system-demo/static/css/main.ef161a93.css.map",
-    "main.6944ab2c.js.map": "https://ayame30.github.io/pos-system-demo/static/js/main.6944ab2c.js.map",
-    "488.ea624d26.chunk.js.map": "https://ayame30.github.io/pos-system-demo/static/js/488.ea624d26.chunk.js.map"
+    "main.css": "https://leeloksee.github.io/1C-POS-system/static/css/main.ef161a93.css",
+    "main.js": "https://leeloksee.github.io/1C-POS-system/static/js/main.267e686b.js",
+    "static/js/488.ea624d26.chunk.js": "https://leeloksee.github.io/1C-POS-system/static/js/488.ea624d26.chunk.js",
+    "index.html": "https://leeloksee.github.io/1C-POS-system/index.html",
+    "main.ef161a93.css.map": "https://leeloksee.github.io/1C-POS-system/static/css/main.ef161a93.css.map",
+    "main.267e686b.js.map": "https://leeloksee.github.io/1C-POS-system/static/js/main.267e686b.js.map",
+    "488.ea624d26.chunk.js.map": "https://leeloksee.github.io/1C-POS-system/static/js/488.ea624d26.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ef161a93.css",
-    "static/js/main.6944ab2c.js"
+    "static/js/main.267e686b.js"
   ]
 }
